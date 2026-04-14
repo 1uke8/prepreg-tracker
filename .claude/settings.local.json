@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(GIT_DIR=\"C:/Users/lukeb/Documents/prepreg-tracker/.git\" GIT_WORK_TREE=\"C:/Users/lukeb/Documents/prepreg-tracker\" git status)",
+      "Bash(npm run:*)",
+      "Bash(taskkill /F /IM node.exe)",
+      "Bash(cmd /c \"taskkill /F /IM node.exe\")",
+      "Bash(cmd /c \"tasklist /FI \\\\\"IMAGENAME eq node.exe\\\\\"\")",
+      "Bash(cmd /c \"tasklist\")",
+      "Bash(cmd /c \"for /f \\\\\"tokens=5\\\\\" %a in \\('netstat -aon ^| findstr :5173'\\) do taskkill /F /PID %a\")",
+      "Bash(cmd /c \"for /f \\\\\"tokens=5\\\\\" %a in \\('netstat -aon ^| findstr :5174'\\) do taskkill /F /PID %a\")",
+      "Bash(cmd /c \"for /f \\\\\"tokens=5\\\\\" %a in \\('netstat -aon ^| findstr :5175'\\) do taskkill /F /PID %a\")",
+      "Bash(cmd /c \"netstat -aon | findstr \\\\\":517\\\\\"\")",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(cmd /c \"netstat -aon | findstr \\\\\":5173\\\\\"\")",
+      "Bash(cmd /c \"netstat -ano | findstr 5173\")"
+    ]
+  }
+}
