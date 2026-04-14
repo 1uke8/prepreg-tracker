@@ -1,0 +1,22 @@
+{
+  "name": "Location",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Location name"
+    },
+    "isFreezer": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this is a freezer location"
+    },
+    "temperature": {
+      "type": "string",
+      "description": "Temperature range"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

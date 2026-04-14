@@ -1,0 +1,80 @@
+{
+  "name": "Material",
+  "type": "object",
+  "properties": {
+    "part_number": {
+      "type": "string",
+      "description": "Material part number"
+    },
+    "description": {
+      "type": "string",
+      "description": "Material description"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Composite",
+        "Resin Film",
+        "Elastomer",
+        "Adhesive",
+        "Core"
+      ],
+      "description": "Material category"
+    },
+    "consumption": {
+      "type": "string",
+      "description": "Consumption type or rate"
+    },
+    "can_re_life": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether material can be re-lifed"
+    },
+    "track_hours": {
+      "type": "boolean",
+      "default": false,
+      "description": "Track hours for this material"
+    },
+    "track_expiry": {
+      "type": "boolean",
+      "default": false,
+      "description": "Track expiry for this material"
+    },
+    "is_logged": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether material is logged"
+    },
+    "default_width": {
+      "type": "number",
+      "description": "Default width in mm"
+    },
+    "default_preparation_time": {
+      "type": "number",
+      "description": "Default preparation time in minutes"
+    },
+    "default_out_life": {
+      "type": "number",
+      "description": "Default out-life in hours"
+    },
+    "out_life_remaining_short": {
+      "type": "number",
+      "description": "Out-life remaining threshold for short warning (hours)"
+    },
+    "out_life_remaining_critical": {
+      "type": "number",
+      "description": "Out-life remaining threshold for critical warning (hours)"
+    },
+    "expiry_days_short": {
+      "type": "number",
+      "description": "Expiry days threshold for short warning"
+    },
+    "expiry_days_critical": {
+      "type": "number",
+      "description": "Expiry days threshold for critical warning"
+    }
+  },
+  "required": [
+    "part_number"
+  ]
+}

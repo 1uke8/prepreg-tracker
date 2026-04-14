@@ -1,0 +1,52 @@
+{
+  "name": "Batch",
+  "type": "object",
+  "properties": {
+    "batch_number": {
+      "type": "string",
+      "description": "Batch number identifier"
+    },
+    "material_id": {
+      "type": "string",
+      "description": "Reference to Material"
+    },
+    "material_name": {
+      "type": "string",
+      "description": "Material part number for display"
+    },
+    "manufacture_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of manufacture"
+    },
+    "expiry_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Expiry date"
+    },
+    "supplier": {
+      "type": "string",
+      "description": "Supplier name"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Quarantine",
+        "Available",
+        "Depleted",
+        "Expired",
+        "Rejected"
+      ],
+      "default": "Quarantine",
+      "description": "Batch status"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    }
+  },
+  "required": [
+    "batch_number",
+    "material_id"
+  ]
+}

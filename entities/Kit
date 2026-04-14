@@ -1,0 +1,77 @@
+{
+  "name": "Kit",
+  "type": "object",
+  "properties": {
+    "part_number": {
+      "type": "string",
+      "description": "Part number"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description"
+    },
+    "order_number": {
+      "type": "string",
+      "description": "Order number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Pending",
+        "In Progress",
+        "Ready",
+        "Issued",
+        "Cancelled"
+      ],
+      "default": "Pending"
+    },
+    "location": {
+      "type": "string"
+    },
+    "cure_by_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "comments": {
+      "type": "string"
+    },
+    "materials": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "material_id": {
+            "type": "string"
+          },
+          "material_name": {
+            "type": "string"
+          },
+          "stock_id": {
+            "type": "string",
+            "description": "Reference to specific stock item"
+          },
+          "batch_number": {
+            "type": "string"
+          },
+          "roll_number": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unit": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Materials in the kit"
+    },
+    "archived": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "part_number"
+  ]
+}

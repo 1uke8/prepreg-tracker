@@ -1,0 +1,94 @@
+{
+  "name": "Stock",
+  "type": "object",
+  "properties": {
+    "stock_id": {
+      "type": "string",
+      "description": "Unique stock identifier"
+    },
+    "roll_number": {
+      "type": "string",
+      "description": "Roll number"
+    },
+    "batch_id": {
+      "type": "string",
+      "description": "Reference to Batch"
+    },
+    "batch_number": {
+      "type": "string",
+      "description": "Batch number for display"
+    },
+    "material_id": {
+      "type": "string",
+      "description": "Reference to Material"
+    },
+    "material_name": {
+      "type": "string",
+      "description": "Material part number for display"
+    },
+    "description": {
+      "type": "string",
+      "description": "Material description"
+    },
+    "location": {
+      "type": "string",
+      "enum": [
+        "Freezer A",
+        "Freezer B",
+        "Freezer C",
+        "Clean Room",
+        "Layup Area",
+        "Cure Area"
+      ],
+      "description": "Current storage location"
+    },
+    "quantity": {
+      "type": "number",
+      "description": "Area in m\u00b2"
+    },
+    "width_mm": {
+      "type": "number",
+      "description": "Width in millimeters"
+    },
+    "length_m": {
+      "type": "number",
+      "description": "Length in meters"
+    },
+    "expiry_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Expiry date"
+    },
+    "manufacture_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of manufacture"
+    },
+    "out_life": {
+      "type": "number",
+      "description": "Out-life in hours"
+    },
+    "archived": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the stock is archived"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "File attachment URLs"
+    }
+  },
+  "required": [
+    "stock_id",
+    "batch_id",
+    "material_id",
+    "location"
+  ]
+}

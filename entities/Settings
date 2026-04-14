@@ -1,0 +1,18 @@
+{
+  "name": "Settings",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "Settings key (e.g., 'material_categories')"
+    },
+    "value": {
+      "type": "object",
+      "description": "Settings value as JSON"
+    }
+  },
+  "required": [
+    "key",
+    "value"
+  ]
+}
