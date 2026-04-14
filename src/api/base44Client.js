@@ -93,11 +93,16 @@ function applyFilters(query, filters = {}) {
 function createEntityClient(tableName) {
   return {
     async list(filters = {}) {
-      let query = supabase.from(tableName).select('*').order('created_at', { ascending: false })
-      query = applyFilters(query, filters)
-      const { data, error } = await query
-      if (error) throw error
-      return data ?? []
+      try {
+        let query = supabase.from(tableName).select('*').order('created_at', { ascending: false })
+        query = applyFilters(query, filters)
+        const { data, error } = await query
+        if (error) throw error
+        return data ?? []
+      } catch (err) {
+        console.warn(`[base44Client] ${tableName}.list() failed — returning []:`, err?.message ?? err)
+        return []
+      }
     },
 
     async filter(filters = {}) {
