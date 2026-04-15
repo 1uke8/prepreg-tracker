@@ -6,22 +6,26 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // Set both loading flags to false immediately — no Base44 public-settings check needed
   const [isLoadingAuth, setIsLoadingAuth] = useState(false);
   const [isLoadingPublicSettings] = useState(false);
   const [authError] = useState(null);
   const [appPublicSettings] = useState(null);
 
   useEffect(() => {
-    // Check for an existing Supabase session on mount
-    supabase.auth.getUser().then(({ data: { user: u } }) => {
-      if (u) {
-        setUser({ id: u.id, email: u.email, full_name: u.user_metadata?.full_name ?? u.email });
-        setIsAuthenticated(true);
+    const initAuth = async () => {
+      // If there's already a session (e.g. after a page refresh), use it
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        // Attempt anonymous sign-in so RLS authenticated-role policies apply.
+        // If anonymous sign-ins are disabled in your Supabase project this fails
+        // gracefully — the app still works because the DB has PUBLIC RLS policies
+        // that allow the anon role to read and write all tables.
+        await supabase.auth.signInAnonymously();
       }
-    });
+    };
+    initAuth();
 
-    // Keep in sync with Supabase auth state changes (login / logout)
+    // Keep in sync with auth state changes (login / logout / token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       const u = session?.user ?? null;
       if (u) {
@@ -42,7 +46,6 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
   };
 
-  // Placeholder — add a /login route when ready
   const navigateToLogin = () => {
     console.warn('navigateToLogin: no login page configured yet');
   };

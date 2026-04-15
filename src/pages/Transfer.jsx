@@ -88,7 +88,7 @@ export default function Transfer() {
 
   const { data: transfers = [], isLoading } = useQuery({
     queryKey: ['transfers'],
-    queryFn: () => base44.entities.Transfer.list('-created_date'),
+    queryFn: () => base44.entities.Transfer.list(), // base44Client already orders by created_at desc
   });
 
   const { data: stock = [] } = useQuery({

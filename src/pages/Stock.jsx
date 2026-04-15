@@ -376,8 +376,10 @@ export default function Stock() {
     e.preventDefault();
     
     if (editingStock) {
+      // eslint-disable-next-line no-unused-vars
+      const { material_type, ...rest } = formData; // material_type not in stocks table
       const data = {
-        ...formData,
+        ...rest,
         quantity: formData.quantity ? Number(formData.quantity) : null,
         width_mm: formData.width_mm ? Number(formData.width_mm) : null,
         length_m: formData.length_m ? Number(formData.length_m) : null,
@@ -413,14 +415,11 @@ export default function Stock() {
       // Create new batch
       let newBatch;
       try {
+        // Only send columns that exist in the batches table
         newBatch = await createBatchMutation.mutateAsync({
           batch_number: batchData.batch_number,
           material_id: batchData.material_id,
-          material_name: material?.part_number || '',
-          manufacture_date: batchData.manufacture_date || null,
-          expiry_date: batchData.expiry_date || null,
-          supplier: batchData.supplier || '',
-          status: 'Quarantine' // Default status for new batches
+          notes: batchData.notes || null,
         });
         queryClient.invalidateQueries({ queryKey: ['batches'] }); // Invalidate immediately to update cache
       } catch (error) {
@@ -444,6 +443,7 @@ export default function Stock() {
           length_m = roll.value ? Number(roll.value) : null;
         }
         
+        // Only send columns that exist in the stocks table
         allStockItems.push({
           stock_id: `${batchData.batch_number}-${roll.roll_number || (idx + 1)}-${Date.now().toString(36).toUpperCase()}`,
           roll_number: roll.roll_number || `${idx + 1}`,
@@ -452,7 +452,6 @@ export default function Stock() {
           material_id: batchData.material_id,
           material_name: material?.part_number || '',
           description: material?.description || '',
-          material_type: material?.category || '',
           location: roll.location,
           quantity: quantity,
           width_mm: roll.width_mm ? Number(roll.width_mm) : null,
@@ -460,7 +459,6 @@ export default function Stock() {
           manufacture_date: batchData.manufacture_date || null,
           expiry_date: batchData.expiry_date || null,
           out_life: material?.default_out_life || null,
-          status: 'Available', // Default status for new stock items
         });
       });
     }
@@ -474,8 +472,10 @@ export default function Stock() {
 
   const handleSave = () => {
     if (editingStock) {
+      // eslint-disable-next-line no-unused-vars
+      const { material_type, ...rest } = formData; // material_type not in stocks table
       const data = {
-        ...formData,
+        ...rest,
         quantity: formData.quantity ? Number(formData.quantity) : null,
         width_mm: formData.width_mm ? Number(formData.width_mm) : null,
         length_m: formData.length_m ? Number(formData.length_m) : null,
