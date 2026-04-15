@@ -211,23 +211,23 @@ export default function Materials() {
     }
   };
 
-  const getItemsInStock = (materialId) => {
-    return stock
-      .filter(s => s.material_id === materialId && !s.archived)
-      .length;
-  };
+  // Single-pass aggregation over stock — computed once when stock changes,
+  // not on every table row render (avoids O(n×m) repeated filter scans).
+  const stockByMaterial = React.useMemo(() => {
+    return stock.reduce((acc, s) => {
+      if (!s.archived) {
+        if (!acc[s.material_id]) acc[s.material_id] = { count: 0, length: 0, area: 0 };
+        acc[s.material_id].count++;
+        acc[s.material_id].length += s.length_m || 0;
+        acc[s.material_id].area  += s.quantity  || 0;
+      }
+      return acc;
+    }, {});
+  }, [stock]);
 
-  const getTotalLength = (materialId) => {
-    return stock
-      .filter(s => s.material_id === materialId && !s.archived)
-      .reduce((sum, s) => sum + (s.length_m || 0), 0);
-  };
-
-  const getTotalArea = (materialId) => {
-    return stock
-      .filter(s => s.material_id === materialId && !s.archived)
-      .reduce((sum, s) => sum + (s.quantity || 0), 0);
-  };
+  const getItemsInStock = (materialId) => stockByMaterial[materialId]?.count  ?? 0;
+  const getTotalLength  = (materialId) => stockByMaterial[materialId]?.length ?? 0;
+  const getTotalArea    = (materialId) => stockByMaterial[materialId]?.area   ?? 0;
 
   const [sortBy, setSortBy] = useState(null);
   const [sortOrder, setSortOrder] = useState('asc');

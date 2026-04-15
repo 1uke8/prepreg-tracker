@@ -30,22 +30,7 @@ import { toast } from "sonner";
 import { format, subDays } from 'date-fns';
 import { jsPDF } from 'jspdf';
 
-const getLocations = () => {
-  const saved = localStorage.getItem('server_locations');
-  const defaultLocations = [
-    { name: 'Freezer A', isFreezer: true },
-    { name: 'Freezer B', isFreezer: true },
-    { name: 'Freezer C', isFreezer: true },
-    { name: 'Clean Room', isFreezer: false },
-    { name: 'Layup Area', isFreezer: false },
-    { name: 'Cure Area', isFreezer: false }
-  ];
-  const locations = saved ? JSON.parse(saved) : defaultLocations;
-  return locations.map(loc => {
-    const name = typeof loc === 'string' ? loc : loc.name;
-    return { value: name, label: name };
-  });
-};
+// Locations are now fetched from Supabase (locations table) via useQuery inside the component.
 
 const getTransferReasons = () => {
   const saved = localStorage.getItem('server_transfer_reasons');
@@ -64,7 +49,14 @@ const statusOptions = [
 
 export default function Transfer() {
   const queryClient = useQueryClient();
-  const [locations, setLocations] = useState(getLocations());
+  const { data: locationsData = [] } = useQuery({
+    queryKey: ['locations'],
+    queryFn: () => base44.entities.Location.list(),
+    staleTime: 30 * 60 * 1000,
+  });
+  const locations = React.useMemo(() => (
+    locationsData.map(l => ({ value: l.name, label: l.name, isFreezer: l.is_freezer }))
+  ), [locationsData]);
   const [reasons, setReasons] = useState(getTransferReasons());
   const [statusFilter, setStatusFilter] = useState('all');
   const [search, setSearch] = useState('');
@@ -101,20 +93,8 @@ export default function Transfer() {
     queryFn: () => base44.entities.Kit.list(),
   });
 
-  React.useEffect(() => {
-    const handleStorageChange = () => {
-      setLocations(getLocations());
-      setReasons(getTransferReasons());
-    };
-    window.addEventListener('settingsUpdated', handleStorageChange);
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('focus', handleStorageChange);
-    return () => {
-      window.removeEventListener('settingsUpdated', handleStorageChange);
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('focus', handleStorageChange);
-    };
-  }, []);
+  // Locations come from Supabase (useQuery above) — no localStorage listener needed.
+  // Transfer reasons still use localStorage (no dedicated DB table).
 
   const createMutation = useMutation({
     mutationFn: async (data) => {

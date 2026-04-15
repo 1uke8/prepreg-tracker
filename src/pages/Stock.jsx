@@ -50,25 +50,8 @@ import RollsTable from '../components/stock/RollsTable';
 
 const defaultCategories = ['Composite', 'Resin Film', 'Elastomer', 'Adhesive', 'Core'];
 
-const getLocations = () => {
-  const saved = localStorage.getItem('server_locations');
-  const defaultLocations = [
-    { name: 'Freezer A', isFreezer: true },
-    { name: 'Freezer B', isFreezer: true },
-    { name: 'Freezer C', isFreezer: true },
-    { name: 'Clean Room', isFreezer: false },
-    { name: 'Layup Area', isFreezer: false },
-    { name: 'Cure Area', isFreezer: false }
-  ];
-  const locations = saved ? JSON.parse(saved) : defaultLocations;
-  return [
-    { value: 'all', label: 'All Locations' },
-    ...locations.map(loc => {
-      const name = typeof loc === 'string' ? loc : loc.name;
-      return { value: name, label: name };
-    })
-  ];
-};
+// Locations are now stored in Supabase (locations table).
+// getLocations() has been replaced by a useQuery inside the component.
 
 const getStatusOptions = () => {
   const saved = localStorage.getItem('server_statuses');
@@ -83,8 +66,16 @@ const getStatusOptions = () => {
 export default function Stock() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [locations, setLocations] = useState(getLocations());
-  const [statusOptions, setStatusOptions] = useState(getStatusOptions());
+  const { data: locationsData = [] } = useQuery({
+    queryKey: ['locations'],
+    queryFn: () => base44.entities.Location.list(),
+    staleTime: 30 * 60 * 1000, // locations change rarely
+  });
+  const locations = React.useMemo(() => ([
+    { value: 'all', label: 'All Locations' },
+    ...locationsData.map(l => ({ value: l.name, label: l.name, isFreezer: l.is_freezer })),
+  ]), [locationsData]);
+  const [statusOptions] = useState(getStatusOptions());
   const [locationFilter, setLocationFilter] = useState([]);
   const [statusFilter, setStatusFilter] = useState([]);
   const [typeFilter, setTypeFilter] = useState(() => {
@@ -737,20 +728,7 @@ export default function Stock() {
     return () => window.removeEventListener('categoriesUpdated', handleCategoriesUpdate);
   }, []);
 
-  React.useEffect(() => {
-    const handleStorageChange = () => {
-      setLocations(getLocations());
-      setStatusOptions(getStatusOptions());
-    };
-    window.addEventListener('settingsUpdated', handleStorageChange);
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('focus', handleStorageChange);
-    return () => {
-      window.removeEventListener('settingsUpdated', handleStorageChange);
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('focus', handleStorageChange);
-    };
-  }, []);
+  // Locations are fetched from Supabase via useQuery — no localStorage listener needed.
 
   React.useEffect(() => {
     if (filteredStock.length > 0 && !editingStock) {
